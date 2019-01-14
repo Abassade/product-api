@@ -1,19 +1,21 @@
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
-const dotenv = require('dotenv');
+require('dotenv').config({path: __dirname + '/sample.env'});
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const port = process.env.PORT || 3000;
 
-dotenv.config();
-
 const enviroment = process.env.NODE_ENV;
 
-mongoose.connect(process.env.MONGO_URL);
-mongoose.connection.on('connected', ()=> console.info('mongo connected'));
+  async function mongodb() {
+    mongoose.connect(process.env.MONGO_URL);
+    await mongoose.connection.on('connected', ()=> console.info('mongodb connected'));   
 
+     app.listen(port, ()=>console.info(`App is listening on port ${port}`));
+  }
+     mongodb();
 
 if(enviroment === 'development'){
     app.use(morgan('dev'));
@@ -41,5 +43,3 @@ app.use( (req, res, next)=>{
             }
         });
         });
-
-app.listen(port, ()=>console.info(`App is listening on port ${port}`));
