@@ -136,7 +136,7 @@ module.exports = {
         .select({"__v":0, 
         "created_at":0, "_id":0})
         .then( product=>{
-            if(!product){
+            if(product ===null){
                 res.status(404).json({
                     statusCode: 404,
                     message: 'product not found'
