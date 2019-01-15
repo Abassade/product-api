@@ -2,7 +2,6 @@ const Product = require('../models/product');
 const moment = require('moment');
 const Order = require('../models/order');
 
-
 module.exports = {
 
     getBaseUrl: (req, res, next)=>{
@@ -14,7 +13,7 @@ module.exports = {
 
     getAllProducts: (req, res, next)=>{
         Product.find({})
-        .select('name price _id created_at')
+        .select('name price _id product_image created_at')
         .exec()
         .then(products =>{
             const response = {
@@ -26,6 +25,7 @@ module.exports = {
                         _id: product._id,
                         name: product.name,
                         price: product.price,
+                        image_path: product.product_image,
                         created_at: product.created_at
                     }
                 })
@@ -39,8 +39,13 @@ module.exports = {
             })
         });
     },
-    createProduct: (req, res, next)=>{
-        const product = new Product(req.body);
+    createProduct:  (req, res, next)=>{
+        const product = new Product({
+            name: req.body.name,
+            price: req.body.price,
+            product_image: req.file.path
+        });
+        //console.log(req.file);
         product.save()
         .then( product=>{
 
@@ -51,6 +56,7 @@ module.exports = {
                     _id: product._id,
                     name: product.name,
                     price: product.price,
+                    image_path: product.product_image,
                     created_at: product.created_at
                 }
             };
@@ -58,14 +64,14 @@ module.exports = {
         })
         .catch( err=>{
             res.status(500).json({
-                Error: false,
+                Error: true,
                 message:err.message
             });
         });
     },
     getProduct: (req, res, next)=>{
         Product.findById(req.params.id)
-        .select('_id name price created_at')
+        .select('_id name price product_image created_at')
         .exec()
         .then( (product)=>{
             res.status(201).json({
@@ -129,55 +135,108 @@ module.exports = {
         });
     },
     getAllOrders: (req, res, next)=>{
-        
+        Order.find({})
+        .populate('productID')
+        .select({"__v":0})
+        .exec()
+        .then( orders=>{
+            res.status(202)
+            .json({
+                Error: false,
+                message: 'Succesfully fetched list of orders',
+                orders_count: orders.length,
+                orders: orders
+            })
+        })
+        .catch( err=>{
+            res.status(404)
+            .json({
+                Error:true,
+                message:err.message
+            })
+        });
     },
     createOrder: (req, res, next)=>{
         Product.findById(req.body.productID)
-        .select({"__v":0, 
+        .select({"__v":0,
         "created_at":0, "_id":0})
         .then( product=>{
-            if(product ===null){
-                res.status(404).json({
+            if(!product){
+                return res.status(404).json({
                     statusCode: 404,
                     message: 'product not found'
                 });
             }
-            const order = new Order({
-                productID: req.body.productID,
-                quantity: req.body.quantity
-            });
-            order.save()
-            .then( order=>{
-                res.status(201).json({
-                    Error:false,
-                    message: 'Order was made succesfully',
-                    order: {
-                        orderID: order._id,
-                        time_ordered: order.ordered_at,
-                        quantity: order.quantity,
-                        productID: order.productID,
-                        ordered_product: product
-                    }
+            else{
+                const order = new Order({
+                    productID: req.body.productID,
+                    quantity: req.body.quantity
+                });
+                return order.save()
+                .then( order=>{
+                    res.status(201)
+                    .json({
+                        error:false,
+                        message: 'Order was made succesfully',
+                        order: {
+                            orderID: order._id,
+                            time_ordered: order.ordered_at,
+                            quantity: order.quantity,
+                            productID: order.productID,
+                            ordered_product: product
+                        }
+                    })
                 })
-            })
-            .catch( err=>{
-                res.status(500).json({
-                    Error: true,
-                    message: err.message
-                })
-            });
+                .catch( err=>{
+                    res.status(500).json({
+                        Error: true,
+                        message: err.message
+                    })
+                });
+            }
+            
         })
         .catch( err=>{
             res.status(500).json({
                 Error: true,
                 message: err.message
-            })
+            });
         });
     },
     getOrder: (req, res, next)=>{
+        Order.findById(req.params.id)
+        .select({"__v":0})
+        .populate('productID created_at _id name')
+        .exec()
+        .then( order=>{
+            res.status(201).json({
+                Error: false,
+                Order: order
+            });
+        })
+        .catch( err=>{
+            res.status(404)
+            .json({
+                Error:true,
+                message: err.message
+            });
+        });
         
     },
     deleteOrder: (req, res, next)=>{
-        
+        Order.deleteOne({_id:req.params.id})
+        .then( order=>{
+            res.status(201).json({
+                Error:false,
+                message: `Order with ${req.params.id} deleted succesfully`
+            });
+        })
+        .catch( err=>{
+            res.status(404)
+            .json({
+                Error:true,
+                message: err.message
+            });
+        });
     }
 }

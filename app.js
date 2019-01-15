@@ -22,11 +22,13 @@ if(enviroment === 'development'){
 }
 
 app.use(cors());
+app.use(express.static('uploads'));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
 app.use(require('./api/routes/product'));
 app.use(require('./api/routes/orders'));
+app.use(require('./api/routes/user'));
 
 app.use( (req, res, next)=>{
     const error = new Error('Not Found');

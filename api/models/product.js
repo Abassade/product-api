@@ -10,6 +10,10 @@ const productSchema = mongoose.Schema({
         type: Number,
         required: true
     },
+    product_image:{
+        type:String,
+        required: true
+    },
     created_at:{
         type: String,
         default: moment().format('dddd MMMM Do YYYY, h:mm:ss a')

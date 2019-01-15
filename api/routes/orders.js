@@ -6,11 +6,11 @@ router.route('/')
 .get(controller.getOrderBase)
 
 router.route('/orders')
-//.get(controller.getAllOrders)
+.get(controller.getAllOrders)
 .post(controller.createOrder);
 
-// router.route('/orders/:id')
-// .get(controller.getOrder)
-// .delete(controller.deleteOrder);
+router.route('/orders/:id')
+.get(controller.getOrder)
+.delete(controller.deleteOrder);
 
 module.exports = router;
