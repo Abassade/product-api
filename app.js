@@ -10,10 +10,13 @@ const port = process.env.PORT || 3000;
 const enviroment = process.env.NODE_ENV;
 
   async function mongodb() {
-    mongoose.connect(process.env.MONGO_URL);
-    await mongoose.connection.on('connected', ()=> console.info('mongodb connected'));   
+    mongoose.connect(process.env.MONGO_URL,
+         { useNewUrlParser: true });
+    await mongoose.connection.on('connected',
+     ()=> console.info('mongodb connected'));   
 
-     app.listen(port, ()=>console.info(`App is listening on port ${port}`));
+     app.listen(port,
+         ()=>console.info(`App is listening on port ${port}`));
   }
      mongodb();
 
@@ -44,4 +47,4 @@ app.use( (req, res, next)=>{
                 message: error.message
             }
         });
-        });
+    });

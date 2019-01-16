@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const Response = require('../response/response');
 
 module.exports = {
 
@@ -37,22 +38,16 @@ module.exports = {
                             });
                         })
                         .catch( err=>{
-                            res.status(500)
-                            .json({
-                                error:false,
-                                message: err.message
-                            })
+                            Response(res)
+                            .error_res(err, 500)
                         });
                     }
                 });
             }
         })
         .catch( err=>{
-            res.status(500)
-                    .json({
-                        error:false,
-                        message: err.message
-                    });
+            Response(res)
+            .error_res(err, 500);
         });
     },
     logUserIn: (req, res, next)=>{
@@ -95,11 +90,8 @@ module.exports = {
             }
         })
         .catch( err=>{
-            res.status(500)
-            .json({
-                error:false,
-                message: err.message
-            })
+            Response(res)
+            .error_res(err, 500);
         });
     },
     deleteUser: (req, res, next)=>{
@@ -111,10 +103,8 @@ module.exports = {
             })
         })
         .catch( err=>{
-            res.status(500).json({
-                error: true,
-                message: err.message
-            })
+            Response(res)
+            .error_res(err, 500);
         });
     }
 }

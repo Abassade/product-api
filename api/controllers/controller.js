@@ -1,6 +1,7 @@
 const Product = require('../models/product');
 const moment = require('moment');
 const Order = require('../models/order');
+const Response = require('../response/response');
 
 module.exports = {
 
@@ -17,7 +18,7 @@ module.exports = {
         .exec()
         .then(products =>{
             const response = {
-                Error: false,
+                error: false,
                 count: products.length,
                 request_method: 'GET',
                 products: products.map( product =>{
@@ -33,10 +34,8 @@ module.exports = {
             res.status(202).json(response);
 
         }).catch(err =>{
-            res.status(400).json({
-                message: err.message,
-                feedback: 'An error occured whilst getting all'
-            })
+            Response(res)
+            .error_res(err, 400);
         });
     },
     createProduct:  (req, res, next)=>{
@@ -63,10 +62,8 @@ module.exports = {
             res.status(201).json(response)
         })
         .catch( err=>{
-            res.status(500).json({
-                Error: true,
-                message:err.message
-            });
+            Response(res)
+            .error_res(err, 500)
         });
     },
     getProduct: (req, res, next)=>{
@@ -80,10 +77,8 @@ module.exports = {
             });
         })
         .catch(err=>{
-            res.status(500).json({
-                Error: false,
-                message:err.message
-            });
+            Response(res)
+            .error_res(err, 500)
         });
     }, 
 
@@ -104,10 +99,8 @@ module.exports = {
                 })
             })
             .catch( err=>{
-                res.json({
-                    Error: true,
-                    message: err.message
-                })
+                Response(res)
+            .error_res(err, 400)
             })
     },
     deleteProduct: (req, res, next)=>{
@@ -119,10 +112,8 @@ module.exports = {
             });
         })
         .catch( err=>{
-            res.json({
-                Error: true,
-                message: err.message
-            })
+            Response(res)
+            .error_res(err, 400)
         });
     },
 
@@ -149,11 +140,8 @@ module.exports = {
             })
         })
         .catch( err=>{
-            res.status(404)
-            .json({
-                Error:true,
-                message:err.message
-            })
+            Response(res)
+            .error_res(err, 404)
         });
     },
     createOrder: (req, res, next)=>{
@@ -188,19 +176,15 @@ module.exports = {
                     })
                 })
                 .catch( err=>{
-                    res.status(500).json({
-                        Error: true,
-                        message: err.message
-                    })
+                    Response(res)
+            .error_res(err, 500)
                 });
             }
             
         })
         .catch( err=>{
-            res.status(500).json({
-                Error: true,
-                message: err.message
-            });
+            Response(res)
+            .error_res(err, 500)
         });
     },
     getOrder: (req, res, next)=>{
@@ -215,11 +199,8 @@ module.exports = {
             });
         })
         .catch( err=>{
-            res.status(404)
-            .json({
-                Error:true,
-                message: err.message
-            });
+            Response(res)
+            .error_res(err, 404)
         });
         
     },
@@ -232,11 +213,8 @@ module.exports = {
             });
         })
         .catch( err=>{
-            res.status(404)
-            .json({
-                Error:true,
-                message: err.message
-            });
+            Response(res)
+            .error_res(err, 404)
         });
     }
 }
