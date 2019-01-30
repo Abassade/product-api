@@ -39,7 +39,7 @@ router.route('/product')
 
 router.route('/product/:id')
 .get(controller.getProduct)
-.patch(controller.patchProduct)
-.delete(controller.deleteProduct);
+.patch(auth, controller.patchProduct)
+.delete(auth, controller.deleteProduct);
 
 module.exports = router;
