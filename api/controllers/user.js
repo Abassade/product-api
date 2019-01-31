@@ -69,10 +69,15 @@ module.exports = {
                         });
                     }
                     if(result){
-                        const token =jwt.sign({email: user.email,
-                        userID: user._id},
-                         process.env.JWT_SECRET,
-                          {expiresIn: "1h"});
+                        const token =jwt.sign({
+                            email: user.email,
+                            userID: user._id
+                          },
+                          process.env.JWT_SECRET,
+                           {
+                             expiresIn: "1h"
+                              }
+                        );
                         
                         return res.status(200).json({
                             error: false,
@@ -100,7 +105,7 @@ module.exports = {
             res.status(200).json({
                 error: false,
                 message: `User was deleted succesfully`
-            })
+            });
         })
         .catch( err=>{
             Response(res)

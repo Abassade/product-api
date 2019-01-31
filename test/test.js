@@ -12,18 +12,33 @@ chai.use(chaiHttp);
 describe('BaseSchema', ()=> {
 
     beforeEach( done=>{
-      product.deleteMany({}, (err) => { 
-        done();           
-       });  
-  
+      done();
     });
   
     afterEach( done=>{
+      product.deleteMany({}, (err) => {   
+     }); 
       done();
     });
   
     it('should list ALL products', done=> {
       
   });
+
+    it('should list ALL products', done=> {
+        
+    });
+
+    it('should list ALL products', done=> {
+        
+    });
+
+    it('should list ALL products', done=> {
+        
+    });
+
+    it('should list ALL products', done=> {
+        
+    });
 
 });

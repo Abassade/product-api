@@ -174,7 +174,7 @@ module.exports = {
                             ordered_product: product
                         }
                     })
-                });
+                })
                 .catch( err=>{
                     Response(res)
                     .error_res(err, 500)
