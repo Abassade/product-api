@@ -130,14 +130,14 @@ module.exports = {
         .populate('productID')
         .select({"__v":0})
         .exec()
-        .then( orders=>{
+        .then( orders =>{
             res.status(202)
             .json({
-                Error: false,
+                error: false,
                 message: 'Succesfully fetched list of orders',
                 orders_count: orders.length,
                 orders: orders
-            })
+            });
         })
         .catch( err=>{
             Response(res)
