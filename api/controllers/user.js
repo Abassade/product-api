@@ -9,7 +9,7 @@ module.exports = {
 
         User.findOne({email: req.body.email})
         .exec()
-        .then( data=>{
+        .then( data =>{
             if(data){
                 res.status(409).json({
                 statusCode: 409,

@@ -3,16 +3,16 @@ const moment = require('moment');
 const Order = require('../models/order');
 const Response = require('../response/response');
 
-module.exports = {
+class Controller {
 
-    getBaseUrl: (req, res, next)=>{
+    getBaseUrl (req, res, next){
         res.status(200).json({
             Error: false,
             message: 'Welcome to product api'
         });
-    },
+    }
 
-    getAllProducts: (req, res, next)=>{
+    getAllProducts (req, res, next){
         Product.find({})
         .select('name price _id product_image created_at')
         .exec()
@@ -20,7 +20,6 @@ module.exports = {
             const response = {
                 error: false,
                 count: products.length,
-                request_method: 'GET',
                 products: products.map( product =>{
                     return{
                         _id: product._id,
@@ -37,8 +36,8 @@ module.exports = {
             Response(res)
             .error_res(err, 400);
         });
-    },
-    createProduct:  (req, res, next)=>{
+    }
+    createProduct  (req, res, next){
         const product = new Product({
             name: req.body.name,
             price: req.body.price,
@@ -49,7 +48,7 @@ module.exports = {
         .then( product=>{
 
             const response = {
-                Error: false,
+                error: false,
                 message: 'Product succesfully saved into db',
                 createdProduct: {
                     _id: product._id,
@@ -65,8 +64,8 @@ module.exports = {
             Response(res)
             .error_res(err, 500)
         });
-    },
-    getProduct: (req, res, next)=>{
+    }
+    getProduct (req, res, next){
         Product.findById(req.params.id)
         .select('_id name price product_image created_at')
         .exec()
@@ -80,9 +79,9 @@ module.exports = {
             Response(res)
             .error_res(err, 500)
         });
-    }, 
+    }
 
-    patchProduct: (req, res, next)=>{
+    patchProduct(req, res, next){
         let newBody = {
             name: req.body.name,
             price: req.body.price,
@@ -102,30 +101,30 @@ module.exports = {
                 Response(res)
             .error_res(err, 400)
             })
-    },
-    deleteProduct: (req, res, next)=>{
+    }
+    deleteProduct (req, res, next){
         Product.deleteOne({_id: req.params.id})
         .then( product=>{
             res.status(200).json({
                 Error: false,
-                message: `The product was succesfullt deleted`
+                message: `The product was succesfully deleted`
             });
         })
         .catch( err=>{
             Response(res)
             .error_res(err, 400)
         });
-    },
+    }
 
-    // code base for order routes
+    // controller for order routes
 
-    getOrderBase: (req, res, next)=>{
+    getOrderBase (req, res, next){
         res.status(200).json({
             Error:false,
             message: 'Welcome to order api'
         });
-    },
-    getAllOrders: (req, res, next)=>{
+    }
+    getAllOrders (req, res, next){
         Order.find({})
         .populate('productID')
         .select({"__v":0})
@@ -143,8 +142,8 @@ module.exports = {
             Response(res)
             .error_res(err, 404)
         });
-    },
-    createOrder: (req, res, next)=>{
+    }
+    createOrder (req, res, next){
         Product.findById(req.body.productID)
         .select({"__v":0,
         "created_at":0, "_id":0})
@@ -186,8 +185,8 @@ module.exports = {
             Response(res)
             .error_res(err, 500)
         });
-    },
-    getOrder: (req, res, next)=>{
+    }
+    getOrder (req, res, next){
         Order.findById(req.params.id)
         .select({"__v":0})
         .populate('productID created_at _id name')
@@ -203,8 +202,8 @@ module.exports = {
             .error_res(err, 404)
         });
         
-    },
-    deleteOrder: (req, res, next)=>{
+    }
+    deleteOrder (req, res, next){
         Order.deleteOne({_id:req.params.id})
         .then( order=>{
             res.status(201).json({
@@ -218,3 +217,5 @@ module.exports = {
         });
     }
 }
+
+module.exports = Controller;
