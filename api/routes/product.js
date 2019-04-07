@@ -30,9 +30,6 @@ const upload = multer({storage: storage, limits:{
     fileFilter: fileFilter
 });
 
-
-router.get('/', controller.getBaseUrl);
-
 router.route('/product')
 .post(auth, upload.single('imagefile'), controller.createProduct)
 .get(controller.getAllProducts);

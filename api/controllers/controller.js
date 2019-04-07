@@ -3,16 +3,16 @@ const moment = require('moment');
 const Order = require('../models/order');
 const Response = require('../response/response');
 
-class Controller {
+module.exports = {
 
-    getBaseUrl (req, res, next){
+    getBaseUrl: (req, res, next)=>{
         res.status(200).json({
             Error: false,
             message: 'Welcome to product api'
         });
-    }
+    },
 
-    getAllProducts (req, res, next){
+    getAllProducts: (req, res, next)=>{
         Product.find({})
         .select('name price _id product_image created_at')
         .exec()
@@ -36,8 +36,8 @@ class Controller {
             Response(res)
             .error_res(err, 400);
         });
-    }
-    createProduct  (req, res, next){
+    },
+    createProduct:  (req, res, next)=>{
         const product = new Product({
             name: req.body.name,
             price: req.body.price,
@@ -64,8 +64,8 @@ class Controller {
             Response(res)
             .error_res(err, 500)
         });
-    }
-    getProduct (req, res, next){
+    },
+    getProduct: (req, res, next)=>{
         Product.findById(req.params.id)
         .select('_id name price product_image created_at')
         .exec()
@@ -79,9 +79,9 @@ class Controller {
             Response(res)
             .error_res(err, 500)
         });
-    }
+    },
 
-    patchProduct(req, res, next){
+    patchProduct: (req, res, next)=>{
         let newBody = {
             name: req.body.name,
             price: req.body.price,
@@ -101,8 +101,8 @@ class Controller {
                 Response(res)
             .error_res(err, 400)
             })
-    }
-    deleteProduct (req, res, next){
+    },
+    deleteProduct: (req, res, next)=>{
         Product.deleteOne({_id: req.params.id})
         .then( product=>{
             res.status(200).json({
@@ -114,17 +114,17 @@ class Controller {
             Response(res)
             .error_res(err, 400)
         });
-    }
+    },
 
     // controller for order routes
 
-    getOrderBase (req, res, next){
+    getOrderBase: (req, res, next)=>{
         res.status(200).json({
             Error:false,
             message: 'Welcome to order api'
         });
-    }
-    getAllOrders (req, res, next){
+    },
+    getAllOrders: (req, res, next)=>{
         Order.find({})
         .populate('productID')
         .select({"__v":0})
@@ -142,8 +142,8 @@ class Controller {
             Response(res)
             .error_res(err, 404)
         });
-    }
-    createOrder (req, res, next){
+    },
+    createOrder: (req, res, next)=>{
         Product.findById(req.body.productID)
         .select({"__v":0,
         "created_at":0, "_id":0})
@@ -185,8 +185,8 @@ class Controller {
             Response(res)
             .error_res(err, 500)
         });
-    }
-    getOrder (req, res, next){
+    },
+    getOrder: (req, res, next)=>{
         Order.findById(req.params.id)
         .select({"__v":0})
         .populate('productID created_at _id name')
@@ -202,8 +202,8 @@ class Controller {
             .error_res(err, 404)
         });
         
-    }
-    deleteOrder (req, res, next){
+    },
+    deleteOrder: (req, res, next)=>{
         Order.deleteOne({_id:req.params.id})
         .then( order=>{
             res.status(201).json({
@@ -218,4 +218,3 @@ class Controller {
     }
 }
 
-module.exports = Controller;

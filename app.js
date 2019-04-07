@@ -12,7 +12,7 @@ const enviroment = process.env.NODE_ENV;
 
 // set the logic to allow mongodb connectioon before the app start running
   async function mongodb() {
-    mongoose.connect("mongodb://localhost:27017/abs-resturant",
+    mongoose.connect(process.env.MONGO_URL,
          { useNewUrlParser: true });
     await mongoose.connection.on('connected',
      ()=> console.info('mongodb connected'));   

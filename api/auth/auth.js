@@ -7,7 +7,7 @@ module.exports = (req, res, next)=> {
         if(!token.length>0){
             return res.status(401).json({
                 error: true,
-                message: 'Oga you never pass in token in header'
+                message: 'Oga you never pass token in header'
             })
         }
 
